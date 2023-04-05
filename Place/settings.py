@@ -145,8 +145,8 @@ REST_FRAMEWORK = {
     
    ),
     'DEFAULT_PERMISSION_CLASSES': (
-            #'rest_framework.permissions.AllowAny',
-            'rest_framework.permissions.IsAuthenticated', #  par défaut, toutes les requêtes auront besoin du token
+            'rest_framework.permissions.AllowAny',
+            #'rest_framework.permissions.IsAuthenticated', #  par défaut, toutes les requêtes auront besoin du token
           ),
 }
 
