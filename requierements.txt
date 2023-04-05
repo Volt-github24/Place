@@ -1,0 +1,6 @@
+django
+django-jazzmin
+gunicorn
+djangorestframework
+drf-yasg
+whitenoise
