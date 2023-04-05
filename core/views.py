@@ -41,7 +41,7 @@ class LoginView(generics.GenericAPIView):
         return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 
-# redemande du token
+# redemande du token (a revoir)
 class RefreshTokenView(generics.GenericAPIView):
 
 	#authentication_classes = [TokenAuthentication]
