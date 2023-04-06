@@ -1,0 +1,7 @@
+*.pyc
+**logs**
+**__pycache__**
+00*_*.py
+**.place**
+**.idea**
+**config.json**
