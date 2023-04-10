@@ -2,6 +2,7 @@ from rest_framework.serializers import Serializer, ValidationError
 from rest_framework import fields, serializers
 from django.contrib.auth import authenticate
 from .models import CustomUser
+from .utils import send_mail_users
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -11,20 +12,14 @@ class ProfileSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
     confirm_password = serializers.CharField(write_only=True, required=True)
-    profile_picture = serializers.ImageField(required=True)
 
     class Meta:
 
         model = CustomUser
-        fields = ('last_name', 'first_name', 'email', 'password', 'confirm_password', 'profile_picture')
+        fields = ('last_name', 'first_name', 'email', 'password', 'confirm_password')
 
 
     def validate(self, data):
-
-        profile_picture = data.get('profile_picture')
-
-        if not profile_picture:
-            data['profile_picture'] = 'default_picture.jpg'
 
         if data.get('password') != data.get('confirm_password'):
             raise serializers.ValidationError({'confirm_password': 'Les mots de passe ne correspondent pas.'})
@@ -33,7 +28,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'email': 'Adresse email deja existante.'})
         
         return data
-
 
 
     def create(self, validated_data):
@@ -63,10 +57,10 @@ class LoginSerializer(serializers.Serializer):
                     raise serializers.ValidationError("User account is disabled.")
                 data["user"] = user
             else:
-                raise serializers.ValidationError(" L'email ou le password est incorrect. ")
+                raise serializers.ValidationError({'email':" L'email ou le password est incorrect. "})
         else:
-            raise serializers.ValidationError(" L'email ou le password est incorrect. ")
-        print(data, "j'affiche les datas")
+            raise serializers.ValidationError({'email':" L'email ou le password est incorrect. "})
+        
         return data
 
 
@@ -79,7 +73,7 @@ class RefreshTokenSerializer(serializers.Serializer):
         token = data.get('token')
 
         if not token:
-            raise serializers.ValidationError(" Ancien token non renseigné ")
+            raise serializers.ValidationError({'token':" Ancien token non renseigné "})
 
         return data
 
@@ -96,13 +90,77 @@ class PasswordChangeSerializer(serializers.Serializer):
         print(user)
 
         if not user.check_password(data.get('old_password')):
-            raise serializers.ValidationError('Ancien mot de passe pas correct')
+            raise serializers.ValidationError({'old_password':'Ancien mot de passe pas correct'})
         return data
 
+    
     def save(self):
 
         user = self.context['request'].user
         user.set_password(self.validated_data['new_password'])
+        user.save()
+        
+        return user
+
+
+class ForgotPasswordSerializer(serializers.Serializer):
+
+    email = serializers.CharField(required=True)
+
+    def validate(self, data):
+
+        user = self.context['request'].user # recuperer le user connecté
+        print(CustomUser.objects.filter(email = data.get('email')).first())
+
+        if not CustomUser.objects.filter(email = data.get('email')).first() :
+            raise serializers.ValidationError({'email':"Cette adresse n'appartient à aucun utilisateur actif"})
+        return data
+
+    
+    def save(self):
+
+        user = self.context['request'].user
+        
+        # send mail
+        if user.last_name or user.first_name :
+            name = user.last_name + ' ' + user.first_name
+        else : 
+            name = user.email
+
+        template = "core/template_mail.html"
+        subject = 'Réinitialisation du mot de passe'
+        context_mail = {"name": name}
+        email = [user.email,]
+        has_send = send_mail_users(template = template, subject = subject, receivers = email, context = context_mail)
+        
+        return user
+
+
+class ProfileChangeSerializer(serializers.Serializer):
+
+    profile_picture = serializers.ImageField(allow_empty_file=True, required = False)
+
+    class Meta:
+
+        model = CustomUser
+        fields = ('profile_picture')
+
+        
+    def validate(self, data):
+
+        user = self.context['request'].user # recuperer le user connecté
+        print(data.get('profile_picture'))
+
+        if not data.get('profile_picture'):
+            print(data.get('profile_picture'))
+            raise serializers.ValidationError({'profile_picture':'Photo de profil non renseignée'})
+        return data
+
+    
+    def save(self):
+
+        user = self.context['request'].user
+        user.profile_picture = self.validated_data['profile_picture']
         user.save()
         
         return user
