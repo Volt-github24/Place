@@ -5,3 +5,4 @@ djangorestframework
 drf-yasg
 whitenoise
 django-cors-headers
+pillow

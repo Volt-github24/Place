@@ -61,6 +61,8 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+AUTH_USER_MODEL="core.CustomUser"
+
 ROOT_URLCONF = 'Place.urls'
 
 TEMPLATES = [
