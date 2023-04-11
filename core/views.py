@@ -62,8 +62,6 @@ class LoginView(generics.GenericAPIView):
 
 			if user.profile_picture:
 				profile_data.update({'profile_picture': user.profile_picture.url})
-				print('hu')
-			print('huuuuuuuuuuu')
 			return Response(profile_data, status=status.HTTP_200_OK)
         
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -138,9 +136,11 @@ class ProfileChangeView(generics.GenericAPIView):
 
 		serializer = ProfileChangeSerializer(data=request.data, context={'request': request})
 		serializer.is_valid(raise_exception=True)
-		serializer.save()
+		url = serializer.save()
+		
+		profile = {'url':url}
         
-		return Response({'profile_picture':'Photo de profil changée avec succès'})
+		return Response(profile, status=status.HTTP_200_OK)
 
 
 # lien pour notifier l'utilisateur dont dont le mot de passe a été oublié, prend l'email de l'utilisateur et lui envoit un mail pour la suite de la procedure de modification de mot de passe

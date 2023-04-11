@@ -163,7 +163,7 @@ class ProfileChangeSerializer(serializers.Serializer):
         user.profile_picture = self.validated_data['profile_picture']
         user.save()
         
-        return user
+        return user.profile_picture.url
 
 
 class SearchLieuSerializer(serializers.Serializer):
