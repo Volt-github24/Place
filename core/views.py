@@ -42,7 +42,7 @@ class LoginView(generics.GenericAPIView):
 	serializer_class = LoginSerializer
 
 	@swagger_auto_schema(
-		request_body=ProfileSerializer,
+		request_body=LoginSerializer,
 		operation_description="End point de connexion, prends l'email, le password puis retourne l'ensemble des informations de l'utilisateur ainsi que le token",
 		)
 	def post(self, request, *args, **kwargs):
@@ -76,7 +76,7 @@ class RefreshTokenView(generics.GenericAPIView):
 
 
 	@swagger_auto_schema(
-		request_body=ProfileSerializer,
+		request_body=RefreshTokenSerializer,
 		operation_description="End point de refresh_token, prends l'ancien token expiré et retourne un nouveau token non expiré.",
 		)
 	def post(self, request):
@@ -112,7 +112,7 @@ class PasswordChangeView(generics.GenericAPIView):
 	serializer_class = PasswordChangeSerializer
 
 	@swagger_auto_schema(
-		request_body=ProfileSerializer,
+		request_body=PasswordChangeSerializer,
 		operation_description="End point permettant de changer le password, prends l'ancien et le nouveau mot de passe entrés puis met a jour le mot de passe de l'utilisateur connecté si l'ancien mot de passe correspond à un utilisateur dans la base de données.",
 		)
 	def post(self, request):
@@ -131,7 +131,7 @@ class ProfileChangeView(generics.GenericAPIView):
 	permission_classes = [IsAuthenticated,]
 
 	@swagger_auto_schema(
-		request_body=ProfileSerializer,
+		request_body=ProfileChangeSerializer,
 		operation_description="End point permettant de changer la photo de profil, prend la photo passee dans le formulaire par l'utilisateur puis met son champs photo de profil a jour",
 		)
 	def post(self, request):
@@ -149,7 +149,7 @@ class ForgotPasswordView(generics.GenericAPIView):
 	serializer_class = ForgotPasswordSerializer
 
 	@swagger_auto_schema(
-		request_body=ProfileSerializer,
+		request_body=ForgotPasswordSerializer,
 		operation_description="End point permettant de notifier l'utilisateur dont dont le mot de passe a été oublié, prend l'email de l'utilisateur et lui envoit un mail pour la suite de la procedure de modification de mot de passe.",
 		)
 	def post(self, request):
@@ -168,7 +168,7 @@ class SearchLieuView(generics.GenericAPIView):
 	permission_classes = [IsAuthenticated,]
 
 	@swagger_auto_schema(
-		request_body=ProfileSerializer,
+		request_body=SearchLieuSerializer,
 		operation_description="End point de suggestions, permettant de retourner les suggestions en fonction de l'entree de l'utilisateur, ceci est utiisé dans la barre de recherche du frontend.",
 		)
 	def post(self, request):
