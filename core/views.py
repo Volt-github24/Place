@@ -5,8 +5,8 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 
 from core.admin import CustomUserAdmin
-from .serializers import (ProfileSerializer, LoginSerializer, RefreshTokenSerializer, PasswordChangeSerializer,
-					ProfileChangeSerializer, SearchLieuSerializer, ForgotPasswordSerializer)
+from .serializers import (ProfileSerializer, LoginSerializer, PasswordChangeSerializer, ResetPasswordSerializer,
+					ProfileChangeSerializer, SearchLieuSerializer, ForgotPasswordSerializer, ChangeInfosSerializer)
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import login
 from rest_framework.permissions import IsAuthenticated
@@ -36,6 +36,27 @@ class ProfileCreateView(generics.CreateAPIView):
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# End point de modification des informations du profile (username, email, last_name, first_name), tous facultatifs, prends ces informations, et les update dans la base de donnees
+class ChangeInfosView(generics.CreateAPIView):
+
+	serializer_class = ChangeInfosSerializer
+
+	@swagger_auto_schema(
+		request_body=ChangeInfosSerializer,
+		operation_description="End point de modification des informations du profile (username, email, last_name, first_name), tous facultatifs, prends ces informations, et les update dans la base de donnees",
+		)
+	def put(self, request):
+
+		obj = CustomUser.objects.get(pk=request.user.id)
+		serializer = ChangeInfosSerializer(obj, data=request.data)
+
+		if serializer.is_valid():
+			serializer.update(serializer)
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		else:
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 # connexion d'un utilisateur avec l'email, le password puis retourne l'ensemble des informations de l'utilisateur et le token
 class LoginView(generics.GenericAPIView):
 
@@ -59,6 +80,9 @@ class LoginView(generics.GenericAPIView):
 			profile_data = profile.data
 			profile_data.update({'token': token.key})
 			profile_data.update({'username':user.username})
+			profile_data.update({'date_joined':str(user.date_joined)[:19]})
+			profile_data.update({'last_login':str(user.last_login)[:19]})
+			profile_data.update({'admin':user.is_staff})
 
 			if user.profile_picture:
 				profile_data.update({'profile_picture': user.profile_picture.url})
@@ -67,47 +91,12 @@ class LoginView(generics.GenericAPIView):
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# redemande du token, prends l'ancien token expiré et retourne un nouveau token non expiré (a revoir...)
-class RefreshTokenView(generics.GenericAPIView):
-
-	serializer_class = RefreshTokenSerializer
-
-
-	@swagger_auto_schema(
-		request_body=RefreshTokenSerializer,
-		operation_description="End point de refresh_token, prends l'ancien token expiré et retourne un nouveau token non expiré.",
-		)
-	def post(self, request):
-
-		try:
-
-			# verifier si le token est bien renseigné
-			serializer = self.get_serializer(data=request.data)
-			serializer.is_valid(raise_exception=True)
-
-			# Récupérer le jeton expiré
-			token = Token.objects.get(key=request.data['token'])
-
-			# Récupérer l'utilisateur associé au jeton
-			user = token.user
-
-            # Créer un nouveau jeton pour l'utilisateur
-			new_token, created = Token.objects.get_or_create(user=user)
-
-            # Supprimer l'ancien jeton
-			token.delete()
-
-			return Response({'token': new_token.key}, status=status.HTTP_200_OK)
-
-		except Token.DoesNotExist:
-
-			return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-# pour changer le mot de passe, prends l'ancien et le nouveau mot de passe entrés puis met a jour le mot de passe de l'utilisateur connecté si l'ancien mor de passe correspond à un utilisateur dans la base de données
+# pour changer le mot de passe, prends l'ancien et le nouveau mot de passe entrés puis met a jour le mot de passe de l'utilisateur connecté si l'ancien mot de passe correspond à un utilisateur dans la base de données
 class PasswordChangeView(generics.GenericAPIView):
 
 	serializer_class = PasswordChangeSerializer
+	permission_classes = [IsAuthenticated,]
+	authentication_classes = (TokenAuthentication,) 
 
 	@swagger_auto_schema(
 		request_body=PasswordChangeSerializer,
@@ -122,11 +111,33 @@ class PasswordChangeView(generics.GenericAPIView):
 		return Response({'detail': 'Mot de passe changé avec succes'})
 
 
+# pour changer le mot de passe, prends le mot de passe et la confirmation de mot de passe , puis met a jour le mot de passe si l'utilisateur a recu un mail, sinon il devra d'abord cliquer sur forgot password, recevoir l'email et suivre la procedure
+class ResetPasswordView(generics.GenericAPIView):
+
+	serializer_class = ResetPasswordSerializer
+	permission_classes = [IsAuthenticated,]
+	authentication_classes = (TokenAuthentication,) 
+
+	@swagger_auto_schema(
+		request_body=ResetPasswordSerializer,
+		operation_description="End point pour changer le mot de passe, prends le mot de passe et la confirmation de mot de passe , puis met a jour le mot de passe si l'utilisateur a recu un mail, sinon il devra d'abord cliquer sur forgot password, recevoir l'email et suivre la procedure.",
+		)
+	def post(self, request):
+
+		serializer = ResetPasswordSerializer(data=request.data, context={'request': request})
+		serializer.is_valid(raise_exception=True)
+		serializer.save()
+        
+		return Response({'detail': 'Mot de passe changé avec succes'})
+
+
 # changer la photo de profil, prend la photo passee dans le formulaire par l'utilisateur puis met son champs photo de profil a jour
 class ProfileChangeView(generics.GenericAPIView):
 
 	serializer_class = ProfileChangeSerializer
 	permission_classes = [IsAuthenticated,]
+	authentication_classes = (TokenAuthentication,) 
+
 
 	@swagger_auto_schema(
 		request_body=ProfileChangeSerializer,
@@ -166,6 +177,7 @@ class SearchLieuView(generics.GenericAPIView):
 
 	serializer_class = SearchLieuSerializer
 	permission_classes = [IsAuthenticated,]
+	authentication_classes = (TokenAuthentication,) 
 
 	@swagger_auto_schema(
 		request_body=SearchLieuSerializer,

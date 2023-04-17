@@ -3,6 +3,7 @@ from rest_framework import fields, serializers
 from django.contrib.auth import authenticate
 from .models import CustomUser
 from .utils import send_mail_users
+from django.forms.models import model_to_dict
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -33,10 +34,43 @@ class ProfileSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         validated_data.pop('confirm_password')
-        print(validated_data)
         user = CustomUser.objects.create_user(**validated_data)
-
+        #user = model_to_dict(user) si je veux retourner aussi le password, et je vais aouter le password brut au dictionnaire
         return user
+
+
+
+class ChangeInfosSerializer(serializers.ModelSerializer):
+
+    email = serializers.EmailField(required = False)
+    first_name = serializers.CharField(required = False)
+    last_name = serializers.CharField(required = False)
+    username = serializers.CharField(required = False)
+
+    class Meta:
+
+        model = CustomUser
+        fields = ('last_name', 'first_name', 'email', 'username')
+
+
+    def validate(self, data):
+
+        email = data.get('email')
+        user = self.context['request'].user
+        if CustomUser.objects.filter(email = email ).exists() and email != user.email:
+            raise serializers.ValidationError({'email': 'Un autre utilisateur a deja cet e-mail.'})
+        
+        return data
+
+
+    def update(self, instance, validated_data):
+
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+        return instance
 
 
 class LoginSerializer(serializers.Serializer):
@@ -64,20 +98,6 @@ class LoginSerializer(serializers.Serializer):
         return data
 
 
-class RefreshTokenSerializer(serializers.Serializer):
-
-    token = serializers.CharField()
-
-    def validate(self, data):
-
-        token = data.get('token')
-
-        if not token:
-            raise serializers.ValidationError({'token':" Ancien token non renseigné "})
-
-        return data
-
-
 class PasswordChangeSerializer(serializers.Serializer):
 
     old_password = serializers.CharField(required=True)
@@ -87,10 +107,10 @@ class PasswordChangeSerializer(serializers.Serializer):
     def validate(self, data):
 
         user = self.context['request'].user # recuperer le user connecté
-        print(user)
 
         if not user.check_password(data.get('old_password')):
             raise serializers.ValidationError({'old_password':'Ancien mot de passe pas correct'})
+        
         return data
 
     
@@ -98,6 +118,38 @@ class PasswordChangeSerializer(serializers.Serializer):
 
         user = self.context['request'].user
         user.set_password(self.validated_data['new_password'])
+        user.save()
+        
+        return user
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+
+    password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+
+    def validate(self, data):
+
+        with open('email.txt', 'r') as fic:
+            email = fic.readline()  
+        print(email, 'recuperé')    
+        user = CustomUser.objects.filter(email = email).first() # recuperer le user concerné
+        
+        if not user :
+            raise serializers.ValidationError({'email':"Nous ne nous souvenons pas que vous vous avez perdu votre mot de passe, si c'est une erreur, veuillez cliquer sur 'forgotpassword' et suivre la procedure. "})
+
+        if data.get('password') != data.get('confirm_password'):
+            raise serializers.ValidationError({'confirm_password': 'Les mots de passe ne correspondent pas.'})
+           
+        return data
+
+    
+    def save(self):
+        with open('email.txt', 'r') as fic:
+            email = fic.readline() 
+        user = CustomUser.objects.filter(email = email).first() # recuperer le user concerné
+        user.set_password(self.validated_data['password'])
         user.save()
         
         return user
@@ -119,7 +171,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
     
     def save(self):
 
-        user = self.context['request'].user
+        user = CustomUser.objects.filter(email = self.validated_data.get('email')).first()
         
         # send mail
         if user.last_name or user.first_name :
@@ -132,7 +184,8 @@ class ForgotPasswordSerializer(serializers.Serializer):
         context_mail = {"name": name}
         email = [user.email,]
         has_send = send_mail_users(template = template, subject = subject, receivers = email, context = context_mail)
-        
+        with open('email.txt', 'w') as fic:
+            fic.write(user.email)
         return user
 
 
