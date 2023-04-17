@@ -41,6 +41,9 @@ class ChangeInfosView(generics.CreateAPIView):
 
 	serializer_class = ChangeInfosSerializer
 
+	permission_classes = [IsAuthenticated,]
+	authentication_classes = (TokenAuthentication,) 
+
 	@swagger_auto_schema(
 		request_body=ChangeInfosSerializer,
 		operation_description="End point de modification des informations du profile (username, email, last_name, first_name), tous facultatifs, prends ces informations, et les update dans la base de donnees",
@@ -115,8 +118,6 @@ class PasswordChangeView(generics.GenericAPIView):
 class ResetPasswordView(generics.GenericAPIView):
 
 	serializer_class = ResetPasswordSerializer
-	permission_classes = [IsAuthenticated,]
-	authentication_classes = (TokenAuthentication,) 
 
 	@swagger_auto_schema(
 		request_body=ResetPasswordSerializer,
