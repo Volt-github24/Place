@@ -171,7 +171,7 @@ class SearchLieuSerializer(serializers.Serializer):
     initial = serializers.CharField(required=True)
 
     def save(self):
-
+        print(self.context['request'].user)
         result = []
         lieux = ["", "nsam", "Bastos", "Centre commercial", "Elig-Edzoa", "Djoungolo", "Emana", "Etoa-Meki", 
         "Mballa  ", "Mfandena ", "Ngoulemakong", "Ngousso", "Njon-essi", "Nkolmesseng", "Messassi", "Nkolondom", 

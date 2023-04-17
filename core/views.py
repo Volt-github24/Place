@@ -165,7 +165,7 @@ class ForgotPasswordView(generics.GenericAPIView):
 class SearchLieuView(generics.GenericAPIView):
 
 	serializer_class = SearchLieuSerializer
-	#permission_classes = [IsAuthenticated,]
+	permission_classes = [IsAuthenticated,]
 
 	@swagger_auto_schema(
 		request_body=SearchLieuSerializer,
