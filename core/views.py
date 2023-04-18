@@ -48,13 +48,13 @@ class ChangeInfosView(generics.CreateAPIView):
 		request_body=ChangeInfosSerializer,
 		operation_description="End point de modification des informations du profile (username, email, last_name, first_name), tous facultatifs, prends ces informations, et les update dans la base de donnees",
 		)
-	def put(self, request):
+	def post(self, request, *args, **kwargs):
 
-		obj = CustomUser.objects.get(pk=request.user.id)
-		serializer = ChangeInfosSerializer(obj, data=request.data)
+		#obj = CustomUser.objects.get(pk=request.user.id)
+		serializer = ChangeInfosSerializer(context={'request': request}, data=request.data)
 
 		if serializer.is_valid():
-			serializer.update(serializer)
+			serializer.save()
 			return Response(serializer.data, status=status.HTTP_200_OK)
 		else:
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

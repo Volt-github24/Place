@@ -42,10 +42,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class ChangeInfosSerializer(serializers.ModelSerializer):
 
-    email = serializers.EmailField(required = False)
-    first_name = serializers.CharField(required = False)
-    last_name = serializers.CharField(required = False)
-    username = serializers.CharField(required = False)
+    email = serializers.EmailField(required = True)
+    first_name = serializers.CharField(required = True)
+    last_name = serializers.CharField(required = True)
+    username = serializers.CharField(required = True)
 
     class Meta:
 
@@ -63,12 +63,15 @@ class ChangeInfosSerializer(serializers.ModelSerializer):
         return data
 
 
-    def update(self, instance, validated_data):
+    def save(self):
 
-        instance.last_name = validated_data.get('last_name', instance.last_name)
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.username = validated_data.get('username', instance.username)
-        instance.email = validated_data.get('email', instance.email)
+        instance = self.context['request'].user
+        print('l\'instance est : ', instance)
+
+        instance.last_name = self.validated_data['last_name']
+        instance.first_name = self.validated_data['first_name']
+        instance.username = self.validated_data['username']
+        instance.email = self.validated_data['email']
         instance.save()
         return instance
 

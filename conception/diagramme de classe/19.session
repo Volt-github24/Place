@@ -1,0 +1,17 @@
+window_sizes 1600 796 375 1219 623 120
+cleanlooks_style
+diagrams
+  classdiagram_ref 128019 // Place-dc
+    975 498 100 A4 0 0
+  active  usecasediagram_ref 128147 // use_case_diagram
+    975 546 100 A4 0 0
+end
+show_stereotypes
+selected classview_ref 128147 // j
+open
+  class_ref 128019 // User
+  class_ref 128147 // Localisation
+  usecaseview_ref 128019 // Uc
+  componentview_ref 128019 // view
+end
+end

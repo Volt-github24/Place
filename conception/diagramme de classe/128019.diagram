@@ -1,0 +1,16 @@
+format 224
+
+classcanvas 128019 class_ref 128019 // User
+  classdiagramsettings member_max_width 0 end
+  xyz 186 92 2000
+end
+classcanvas 128147 class_ref 128147 // Localisation
+  classdiagramsettings member_max_width 0 end
+  xyz 553 274 2000
+end
+relationcanvas 128403 relation_ref 128147 // avoir
+  from ref 128019 z 2001 label "avoir" italic max_width 255 xyz 437 218 3000 to ref 128147
+  no_role_a no_role_b
+  multiplicity_a_pos 534 288 3000 multiplicity_b_pos 364 200 3000
+end
+end

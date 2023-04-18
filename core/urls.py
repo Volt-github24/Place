@@ -16,7 +16,7 @@ urlpatterns = [
     path('change_profile/', ProfileChangeView.as_view(), name='change_profile'),
     path('forgot_password/', ForgotPasswordView.as_view(), name='forgot_password'),
     path('suggest/', SearchLieuView.as_view(), name='suggest'),
-    #path('update/', ChangeInfosView.as_view(), name='update'),
+    path('update/', ChangeInfosView.as_view(), name='update'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

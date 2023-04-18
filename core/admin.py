@@ -5,9 +5,9 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
 
-    list_display = ('profile_picture', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
-    list_filter = ('email', 'is_staff', 'is_active')
-    search_fields = ('email', 'first_name', 'last_name')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'profile_picture', 'is_staff', 'is_active')
+    list_filter = ('username', 'email', 'first_name', 'last_name')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
