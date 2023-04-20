@@ -1,4 +1,3 @@
-from io import open_code
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin

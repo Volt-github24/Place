@@ -6,4 +6,4 @@ drf-yasg
 whitenoise
 django-cors-headers
 pillow
-
+social-auth-app-django
