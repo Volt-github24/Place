@@ -1,7 +1,7 @@
 from rest_framework.serializers import Serializer, ValidationError
 from rest_framework import fields, serializers
 from django.contrib.auth import authenticate
-from .models import CustomUser
+from .models import CustomUser, Recents
 from .utils import send_mail_users
 from django.forms.models import model_to_dict
 
@@ -65,8 +65,7 @@ class ChangeInfosSerializer(serializers.ModelSerializer):
 
     def save(self):
 
-        instance = self.context['request'].user
-        print('l\'instance est : ', instance)
+        instance = self.context['request'].user        
 
         instance.last_name = self.validated_data['last_name']
         instance.first_name = self.validated_data['first_name']
@@ -222,6 +221,47 @@ class ProfileChangeSerializer(serializers.Serializer):
         return user.profile_picture.url
 
 
+class GetRecentsSerializer(serializers.Serializer):
+
+    
+    def get(self):
+
+        user = self.context['request'].user
+
+        to_return, result = [] , []
+
+        result = Recents.objects.filter(trigger = user)
+        
+        
+        for item in result:
+            instance = model_to_dict(item)
+            instance.pop('trigger')
+            instance.pop('id')      
+            instance['date_send'] = str(instance['date_send'])[:19]
+            to_return.append(instance)
+        
+        return to_return
+        
+
+
+class AnalyseTextSerializer(serializers.Serializer):
+
+
+    def save(self, text):
+
+        user = self.context['request'].user
+
+        # appel du modele avec le texte, pour prediction
+
+        # sauvegarde dans recherches recentes
+
+        to_return = [] # va contenir ce que le modele va retourner, puis je traite le retour du modele
+
+        Recents.objects.create(trigger = user, request = text) # dans le save, ci je vais ajouter les reponses
+
+        return to_return
+
+
 class SearchLieuSerializer(serializers.Serializer):
 
     initial = serializers.CharField(required=True)
@@ -256,4 +296,5 @@ class SearchLieuSerializer(serializers.Serializer):
                     result.append(chaine)
 
         return result        
+    
     

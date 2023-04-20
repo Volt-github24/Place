@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
+from .models import CustomUser, Recents
 
 
 class CustomUserAdmin(UserAdmin):
@@ -10,4 +10,12 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('username', 'email', 'first_name', 'last_name')
 
 
+class RecentsAdmin(admin.ModelAdmin):
+
+    list_display = ('date_send', 'request', 'trigger')
+    list_filter = ('date_send', 'request', 'trigger')
+    search_fields = ('date_send', 'request', 'trigger')
+
+
+admin.site.register(Recents, RecentsAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)

@@ -6,11 +6,32 @@ from drf_yasg.utils import swagger_auto_schema
 
 from core.admin import CustomUserAdmin
 from .serializers import (ProfileSerializer, LoginSerializer, PasswordChangeSerializer, ResetPasswordSerializer,
-					ProfileChangeSerializer, SearchLieuSerializer, ForgotPasswordSerializer, ChangeInfosSerializer)
+		GetRecentsSerializer, ProfileChangeSerializer, SearchLieuSerializer, ForgotPasswordSerializer, AnalyseTextSerializer,
+		ChangeInfosSerializer)
+
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import login
 from rest_framework.permissions import IsAuthenticated
-from .models import CustomUser
+from .models import CustomUser, Recents
+from rest_framework.pagination import PageNumberPagination
+
+
+# classe de pagination customisee
+class CustomPagination(PageNumberPagination):
+
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 10
+
+    def get_paginated_response(self, data):
+
+        return Response({
+
+			'link-next-page': self.get_next_link(),
+			'link-previous-page': self.get_previous_link(),            
+            #'count': self.page.paginator.count,
+            'results': data
+        })
 
 
 # inscription, prends les informations de l'utilisateur et les enregistre dans la base de donnees
@@ -182,12 +203,58 @@ class SearchLieuView(generics.GenericAPIView):
 
 	@swagger_auto_schema(
 		request_body=SearchLieuSerializer,
-		operation_description="End point de suggestions, permettant de retourner les suggestions en fonction de l'entree de l'utilisateur, ceci est utiisé dans la barre de recherche du frontend.",
+		operation_description="End point de suggestions, permettant de retourner les suggestions en fonction de l'entree de l'utilisateur, ceci est utiisé dans la barre de recherche du frontend.\
+		retourne : results liste des suggestions",
 		)
 	def post(self, request):
 
 		serializer = SearchLieuSerializer(data=request.data, context={'request': request})
 		serializer.is_valid(raise_exception=True)
 		result = serializer.save()
+        
+		return Response({'result': result})
+
+
+# fonction permettant de retourner les recherches recentes de l'utilisateur connecté
+class GetRecentsView(generics.GenericAPIView):
+
+	serializer_class = GetRecentsSerializer
+	permission_classes = [IsAuthenticated,]
+	authentication_classes = (TokenAuthentication,) 
+	pagination_class = CustomPagination
+	
+	
+	def get(self, request):
+
+		serializer = GetRecentsSerializer(data=request.data, context={'request': request})
+		
+		result = serializer.get()
+
+		 # Appliquer la pagination aux résultats
+		page = self.paginate_queryset(result)
+
+		if page is not None:
+			return self.get_paginated_response(page)
+        
+		return Response({'result': result}, status=status.HTTP_200_OK)
+
+
+# fonction permettant de recuperer le texte entré par l'utilisateur, passer ce texte au model, recuperer les reponses du modele, puis sauvegarder la requete dans les recherches precedents de l'utilisateur
+class AnalyseTextView(generics.CreateAPIView):
+
+	serializer_class = AnalyseTextSerializer
+	permission_classes = [IsAuthenticated,]
+	authentication_classes = (TokenAuthentication,) 
+
+	@swagger_auto_schema(
+		request_body=AnalyseTextSerializer,
+		operation_description="End point de recuperer le texte entré par l'utilisateur, passer ce texte au model, recuperer les reponses du modele, puis sauvegarder la requete dans les recherches precedentes de l'utilisateur, ceci est utiisé dans la barre de recherche du frontend, lors qu'il a choisi parmin les suggestions.\
+		retourne : le lien de la page precedente (null si page precedente), le lien de la page suivante (null si page suivante), et results, liste d'objets recents",
+		)
+	def post(self, request, text, *args, **kwargs):
+
+		serializer = AnalyseTextSerializer(data=request.data, context={'request': request})
+		
+		result = serializer.save(text)
         
 		return Response({'result': result})

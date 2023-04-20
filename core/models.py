@@ -1,3 +1,4 @@
+from io import open_code
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
@@ -63,3 +64,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+
+
+class Recents(models.Model):
+
+    date_send = models.DateTimeField(default=timezone.now)
+    request = models.CharField(max_length = 1024)
+    #response = models.CharField() pour garder egalement les reponses liees a toutes les requetes precedentes
+    trigger = models.ForeignKey(CustomUser, on_delete = models.CASCADE)    
+
+    def __str__(self):
+        
+        return self.trigger.email + " - " + self.request[:10]  + "..."  
