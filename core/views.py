@@ -4,16 +4,53 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 
-from core.admin import CustomUserAdmin
 from .serializers import (ProfileSerializer, LoginSerializer, PasswordChangeSerializer, ResetPasswordSerializer,
 		GetRecentsSerializer, ProfileChangeSerializer, SearchLieuSerializer, ForgotPasswordSerializer, AnalyseTextSerializer,
-		ChangeInfosSerializer)
+		ChangeInfosSerializer, GoogleSocialAuthSerializer, FacebookSocialAuthSerializer)
 
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import login
 from rest_framework.permissions import IsAuthenticated
 from .models import CustomUser, Recents
 from rest_framework.pagination import PageNumberPagination
+
+
+class GoogleSocialAuthView(generics.GenericAPIView):
+
+    serializer_class = GoogleSocialAuthSerializer
+
+    def post(self, request):
+        """
+
+        POST with "auth_token"
+
+        Send an idtoken as from google to get user information
+
+        """
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = ((serializer.validated_data['auth_token']))
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class FacebookSocialAuthView(generics.GenericAPIView):
+
+    serializer_class = FacebookSocialAuthSerializer
+
+    def post(self, request):
+        """
+
+        POST with "auth_token"
+
+        Send an access token as from facebook to get user information
+
+        """
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = ((serializer.validated_data['auth_token']))
+        return Response(data, status=status.HTTP_200_OK)
 
 
 # classe de pagination customisee
@@ -223,7 +260,7 @@ class GetRecentsView(generics.GenericAPIView):
 	authentication_classes = (TokenAuthentication,) 
 	pagination_class = CustomPagination
 	
-	
+
 	def get(self, request):
 
 		serializer = GetRecentsSerializer(data=request.data, context={'request': request})

@@ -65,24 +65,12 @@ AUTH_USER_MODEL="core.CustomUser"
 
 ROOT_URLCONF = 'Place.urls'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY  = '690748159814-sh25urm0cjgshl1k684a2gol01g5sm4r.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile']
-#SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/complete/google-oauth2/'
+GOOGLE_CLIENT_ID  = '690748159814-sh25urm0cjgshl1k684a2gol01g5sm4r.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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'
 
-REST_SOCIAL_OAUTH_PLATFORMS = {
-    'google': {
-        'APP': {
-            'client_id': '690748159814-sh25urm0cjgshl1k684a2gol01g5sm4r.apps.googleusercontent.com',
-            'secret': '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',
-            'key': '',
-        },
-        'SCOPE': ['email', 'profile'],
-        'AUTH_PARAMS': {'access_type': 'online', 'prompt': 'consent'},
-        'USER_FIELDS': ['email', 'first_name', 'last_name'],
-        'AUTH_BACKEND': 'social_core.backends.google.GoogleOAuth2',
-    },
-}
+FACEBOOK_CLIENT_ID = '9029252383783316'
+FACEBOOK_CLIENT_SECRET = '8946decbff8a96e8417f9020f9a77db8'
+
 
 TEMPLATES = [
     {

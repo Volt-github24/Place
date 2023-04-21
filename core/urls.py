@@ -3,7 +3,8 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from .views import (ProfileCreateView, LoginView, PasswordChangeView, ResetPasswordView, ChangeInfosView,
-    GetRecentsView, SearchLieuView, ProfileChangeView, ForgotPasswordView, AnalyseTextView)
+    GetRecentsView, SearchLieuView, ProfileChangeView, ForgotPasswordView, AnalyseTextView, GoogleSocialAuthView,
+    FacebookSocialAuthView)
 
 
 urlpatterns = [
@@ -18,7 +19,9 @@ urlpatterns = [
     path('suggest/', SearchLieuView.as_view(), name='suggest'),
     path('update/', ChangeInfosView.as_view(), name='update'),
     path('recents/', GetRecentsView.as_view(), name='recents'),
-    path('analyse/<str:text>/', AnalyseTextView.as_view(), name = 'analyse')
+    path('analyse/<str:text>/', AnalyseTextView.as_view(), name = 'analyse'),
+    path('google/', GoogleSocialAuthView.as_view()),
+    path('facebook/', FacebookSocialAuthView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
