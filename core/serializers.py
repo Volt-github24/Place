@@ -287,7 +287,7 @@ class GetRecentsSerializer(serializers.Serializer):
 
         to_return, result = [] , []
 
-        result = Recents.objects.filter(trigger = user)
+        result = Recents.objects.filter(trigger = user).order_by('-date_send')
         
         
         for item in result:
