@@ -1,3 +1,4 @@
+"""
 import requests
 
 # Configuration de l'identifiant client et du secret client OAuth2
@@ -39,3 +40,15 @@ if response.status_code == 200:
     print("Token d'authentification : {0}".format(token))
 else:
     print("Erreur lors de la récupération du jeton d'authentification : {0}".format(response.text))
+
+"""
+
+from geopy.geocoders import Nominatim
+import geopy.exc
+
+geolocator = Nominatim(user_agent="my-application")  # Changer "my-application" par votre propre nom d'application
+try:
+    location = geolocator.geocode("")  # récupère la position actuelle de l'utilisateur à partir de son adresse IP
+    print((location.latitude, location.longitude))
+except (geopy.exc.GeocoderTimedOut, geopy.exc.GeocoderUnavailable):
+    print("Impossible de récupérer la position actuelle de l'utilisateur")

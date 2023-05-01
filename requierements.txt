@@ -9,3 +9,4 @@ pillow
 social-auth-app-django
 google-api-python-client
 facebook-sdk
+geopy
