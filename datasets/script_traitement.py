@@ -3,21 +3,24 @@ Nous utilisons ici le jeu de de donnees issu du Github de ARUNARN dans le repert
 https://github.com/arunarn2/GeoLocationTagging
 
 Comme il contient trois fichiers, .train, .dev et .test, nous les fusionnons d'abord en un afin de mieux exploiter 
-de geolocalisation.
+de geolocalisation, le fichier resultant est data_colmplete.csv
 
 Pour petit rappel, l'idee ici est de lier ces coordonnees geographiques par des expressions de geolocalisation relatives
 C'est a dire pouvoir ressortir les dependances du genre, loc1 est au nord-est de loc2, loc1 est au sud-ouest de loc5, etc...
 ainsi de suite ceci pour toutes les paires possibles entre ces localissations
 
 Ensuite il sera question de faire pareil en tenant compte de trois localites,
-C'est a dire pouvoir ressortir les dependances du genre, loc1 est au nord-est du chemin entre loc2 et loc5, etc...
+C'est a dire pouvoir ressortir les dependances du genre, loc1 est au devant a droite du chemin entre loc2 et loc5,
+loc4 est au devant a gauche du chemin entre loc1 et loc5, loc3 est au derriere a droite du chemin entre loc2 et loc15 etc...
+
+Apres execution de ce code, deux fichiers csv sont generes deux_deux.csv et trois_trois.csv contenant respectivement les expressions de
+localisations relatives, en tenant compte de deux deux localites et les expressions de localite relatives en tenant compte de trois trois 
+localites
 """
 
 # IMPORTATIONS DES DIFFERENTES LIBRAIRIES.
 
 import csv
-from math import comb
-from threading import local
 from geopy.point import Point
 import time
 
@@ -45,7 +48,7 @@ with open('deux_deux.csv', 'w', newline='') as fichier_csv:
 
     
     for loc1 in range(len(gps_infos)):
-        line = [] # contiendra les expression de localisation relatives, pour une localites par rapport aux autres
+        
         localisation1 = Point(gps_infos[loc1][0], gps_infos[loc1][1])
 
         for loc2 in range(len(gps_infos)):
@@ -89,7 +92,6 @@ for i in range(len(gps_infos)):
     for j in range(i + 1, len(gps_infos)):
         combinaisons.append([i,j])
 
-
 # Creation du fichier csv resultant
 k = 0
 with open('trois_trois.csv', 'w', newline='') as fichier_csv:
@@ -101,7 +103,7 @@ with open('trois_trois.csv', 'w', newline='') as fichier_csv:
         localisation2 = Point(gps_infos[occ[1]][0], gps_infos[occ[1]][1])
         
         for i in range(len(gps_infos)):
-            line = []
+
             localisation3 = Point(gps_infos[i][0], gps_infos[i][1])
             if localisation3 != localisation1 and localisation3 != localisation2 :
                 
