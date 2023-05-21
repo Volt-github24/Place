@@ -1,17 +1,18 @@
 window_sizes 1600 796 375 1219 623 120
 cleanlooks_style
 diagrams
-  classdiagram_ref 128019 // Place-dc
+  active  classdiagram_ref 128019 // Place-dc
     975 498 100 A4 0 0
-  active  usecasediagram_ref 128147 // use_case_diagram
+  usecasediagram_ref 128147 // use_case_diagram
     975 546 100 A4 0 0
 end
 show_stereotypes
-selected classview_ref 128147 // j
+selected attribute_ref 135699 // nom
 open
   class_ref 128019 // User
-  class_ref 128147 // Localisation
+  class_ref 128147 // CoordonneesGeographiques
+  class_ref 134803 // InstallationsUrbaines
+  class_ref 134931 // Departements
   usecaseview_ref 128019 // Uc
-  componentview_ref 128019 // view
 end
 end

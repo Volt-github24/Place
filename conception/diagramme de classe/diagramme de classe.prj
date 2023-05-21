@@ -1,6 +1,6 @@
 format 224
 "diagramme de classe"
-  revision 1
+  revision 4
   modified_by 19 "voltaire"
 
 
@@ -151,7 +151,7 @@ format 224
       end
     end
 
-    class 128147 "Localisation"
+    class 128147 "CoordonneesGeographiques"
       visibility package 
       cpp_decl ""
       java_decl ""
@@ -190,6 +190,403 @@ format 224
       classrelation 128403 // (avoir)
 	relation_ref 128147 // avoir
       end
+
+      classrelation 136083 // posseder
+	relation_ref 135187 // posseder
+      end
+    end
+
+    class 134803 "InstallationsUrbaines"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      attribute 135315 "nom"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 135443 "type"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 135571 "adresse"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 135443 // (se situer)
+	relation 134931 ---- name "se situer"
+	  a role_name "" multiplicity "*" private
+	    classrelation_ref 135443 // (se situer)
+	  b role_name "" multiplicity "*" private
+	    classrelation_ref 135571 // (se situer)
+      end
+
+      classrelation 135955 // (posseder)
+	relation 135187 ---- name "posseder"
+	  a role_name "" multiplicity "*" private
+	    classrelation_ref 135955 // (posseder)
+	  b role_name "" multiplicity "1" private
+	    classrelation_ref 136083 // posseder
+      end
+    end
+
+    class 134931 "Departements"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      attribute 135699 "nom"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 134931 // <association>
+	relation 134675 ----
+	  a role_name "" private
+	    classrelation_ref 134931 // <association>
+	  b role_name "" private
+	    classrelation_ref 135059 // <association>
+      end
+
+      classrelation 136723 // (avoir)
+	relation 135571 ---- name "avoir"
+	  a role_name "" multiplicity "1" private
+	    classrelation_ref 136723 // (avoir)
+	  b role_name "" multiplicity "*" private
+	    classrelation_ref 136851 // (avoir)
+      end
+
+      classrelation 143379 // (posseder)
+	relation 142099 ---- name "posseder"
+	  a role_name "" multiplicity "1" private
+	    classrelation_ref 143379 // (posseder)
+	  b role_name "" multiplicity "*" private
+	    classrelation_ref 143507 // (posseder)
+      end
+
+      attribute 142995 "superficie"
+	public explicit_type "float"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
+    class 135059 "Villes"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 135059 // <association>
+	relation_ref 134675 // <association>
+      end
+
+      classrelation 135315 // contenir
+	relation_ref 134803 // contenir
+      end
+
+      classrelation 136211 // (avoir)
+	relation 135315 ---- name "avoir"
+	  a role_name "" multiplicity "*" private
+	    classrelation_ref 136211 // (avoir)
+	  b role_name "" multiplicity "1" private
+	    classrelation_ref 136339 // (avoir)
+      end
+
+      classrelation 136467 // (avoir)
+	relation 135443 ---- name "avoir"
+	  a role_name "" multiplicity "*" private
+	    classrelation_ref 136467 // (avoir)
+	  b role_name "" multiplicity "1" private
+	    classrelation_ref 136595 // (avoir)
+      end
+
+      classrelation 143507 // (posseder)
+	relation_ref 142099 // posseder
+      end
+
+      classrelation 143763 // chef lieu
+	relation_ref 142227 // chef lieu
+      end
+
+      attribute 142227 "nom"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 142355 "altitude"
+	public explicit_type "float"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 142483 "superficie"
+	public explicit_type "float"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
+    class 135187 "Regions"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 135187 // (contenir)
+	relation 134803 ---- name "contenir"
+	  a role_name "" multiplicity "*" private
+	    classrelation_ref 135187 // (contenir)
+	  b role_name "" multiplicity "1" private
+	    classrelation_ref 135315 // contenir
+      end
+
+      classrelation 136851 // (avoir)
+	relation_ref 135571 // avoir
+      end
+
+      classrelation 143635 // (chef lieu)
+	relation 142227 ---- name "chef lieu"
+	  a role_name "" multiplicity "1" private
+	    classrelation_ref 143635 // (chef lieu)
+	  b role_name "" multiplicity "1" private
+	    classrelation_ref 143763 // chef lieu
+      end
+
+      attribute 142867 "nom"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 143123 "superficie"
+	public explicit_type "float"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
+    class 135315 "Quartiers"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 135571 // (se situer)
+	relation_ref 134931 // se situer
+      end
+
+      classrelation 135699 // (avoir)
+	relation 135059 ---- name "avoir"
+	  a role_name "" multiplicity "*" private
+	    classrelation_ref 135699 // (avoir)
+	  b role_name "" multiplicity "1" private
+	    classrelation_ref 135827 // (avoir)
+      end
+
+      classrelation 136595 // (avoir)
+	relation_ref 135443 // avoir
+      end
+
+      attribute 143507 "nom"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 143635 "superficie"
+	public explicit_type "float"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 143891 // <aggregation>
+	relation 142355 o---
+	  a role_name "" private
+	    classrelation_ref 143891 // <aggregation>
+	  b role_name "" private
+	    classrelation_ref 144019 // <aggregation>
+      end
+
+      classrelation 144147 // (avoir)
+	relation 142483 ---- name "avoir"
+	  a role_name "" multiplicity "1" private
+	    classrelation_ref 144147 // (avoir)
+	  b role_name "" multiplicity "*" private
+	    classrelation_ref 144275 // (avoir)
+      end
+    end
+
+    class 135443 "Rues"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 135827 // (avoir)
+	relation_ref 135059 // avoir
+      end
+
+      attribute 142611 "nom"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 142739 "numero"
+	public explicit_type "int"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+    end
+
+    class 135571 "Arrondissements"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      mysql_decl ""
+      
+      classrelation 136339 // (avoir)
+	relation_ref 135315 // avoir
+      end
+
+      attribute 143251 "nom"
+	public explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      attribute 143379 "superficie"
+	public explicit_type "float"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	mysql_decl ""
+	MysqlColumn
+      end
+
+      classrelation 144019 // <aggregation>
+	relation_ref 142355 // <aggregation>
+      end
+
+      classrelation 144275 // (avoir)
+	relation_ref 142483 // avoir
+      end
     end
   end
 
@@ -215,7 +612,7 @@ format 224
     activitydiagramsettings
      end
     usecasediagram 128147 "use_case_diagram"
-      usecasediagramsettings end
+      usecasediagramsettings draw_all_relations no end
       size A4
     end
 
@@ -276,6 +673,11 @@ format 224
 	-_->
 	  on usecase_ref 128403 // s'authentifier
       end
+
+      simplerelation 135187
+	-_->
+	  on usecase_ref 128403 // s'authentifier
+      end
     end
 
     usecase 128275 "demander historique de recherche"
@@ -328,7 +730,7 @@ format 224
        end
     end
 
-    usecase 128531 "s'inscrire"
+    usecase 128531 "creer un profil"
       
       usecasediagramsettings end
       
