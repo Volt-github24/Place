@@ -1,0 +1,70 @@
+format 224
+
+subject 128019 ""
+  xyzwh 200 28 2000 465 432
+classcanvas 128147 class_ref 128019 // User
+  simpleclassdiagramsettings end
+  xyz 92 126 2000
+end
+usecasecanvas 128275 usecase_ref 128019 // Rechercher un lieu
+  xyzwh 241 39 3005 64 32 label_xy 305 45
+end
+usecasecanvas 128403 usecase_ref 128147 // modifier le profil
+  xyzwh 232 123 3005 64 32 label_xy 200 160
+end
+usecasecanvas 128531 usecase_ref 128275 // demander historique de recherche
+  xyzwh 295 348 3005 64 32 label_xy 216 380
+end
+usecasecanvas 128659 usecase_ref 128403 // s'authentifier
+  xyzwh 389 214 3005 64 32 label_xy 404 253
+end
+usecasecanvas 128787 usecase_ref 128531 // creer un profil
+  xyzwh 263 216 3005 64 32 label_xy 251 248
+end
+classcanvas 128915 class_ref 128275 // Admin
+  simpleclassdiagramsettings end
+  xyz 771 192 2000
+end
+usecasecanvas 129043 usecase_ref 128659 // ajouter un lieu
+  xyzwh 540 38 3005 64 32 label_xy 526 70
+end
+usecasecanvas 129171 usecase_ref 128787 // supprimer un lieu
+  xyzwh 558 212 3005 64 32 label_xy 534 244
+end
+line 129299 ----
+  from ref 128915 z 3006 to ref 129043
+line 129555 ---- decenter_end 140
+  from ref 128147 z 3006 to ref 128275
+line 129683 ----
+  from ref 128147 z 3006 to ref 128403
+line 129811 ----
+  from ref 128147 z 3006 to ref 128787
+line 129939 ----
+  from ref 128147 z 3006 to ref 128531
+simplerelationcanvas 130067 simplerelation_ref 128019
+  decenter_end 375
+  from ref 128275 z 3006 to ref 128659
+end
+simplerelationcanvas 130835 simplerelation_ref 128403
+  from ref 128531 z 3006 to ref 128659
+end
+simplerelationcanvas 130963 simplerelation_ref 128531
+  from ref 129043 z 3006 to ref 128659
+end
+simplerelationcanvas 131091 simplerelation_ref 128659
+  from ref 129171 z 3006 to ref 128659
+end
+line 131219 ----
+  from ref 128915 z 3006 to ref 129171
+line 131347 ----
+  from ref 128915 z 3006 to ref 128531
+line 131475 ----
+  from ref 128915 z 3006 to ref 128275
+line 131603 ---- decenter_end 468
+  from ref 128915 z 3006 to ref 128403
+simplerelationcanvas 132115 simplerelation_ref 135187
+  decenter_begin 859
+  decenter_end 140
+  from ref 128403 z 3006 to ref 128659
+end
+end

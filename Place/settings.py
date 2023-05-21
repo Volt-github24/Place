@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'jazzmin',
     'core',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', # for deploiement
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -59,7 +61,16 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+AUTH_USER_MODEL="core.CustomUser"
+
 ROOT_URLCONF = 'Place.urls'
+
+GOOGLE_CLIENT_ID  = '690748159814-sh25urm0cjgshl1k684a2gol01g5sm4r.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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'
+
+FACEBOOK_CLIENT_ID = '9029252383783316'
+FACEBOOK_CLIENT_SECRET = '8946decbff8a96e8417f9020f9a77db8'
+
 
 TEMPLATES = [
     {
@@ -130,6 +141,16 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'TheVillage237@gmail.com'
+EMAIL_HOST_PASSWORD = 'asjecpnvamtdrrgs'
+DEFAULT_FROM_EMAIL = 'Place <TheVillage237@gmail.com>'
+
+
 MEDIA_URL = "/media/"
 
 # Dossier où seront stockés les médias
@@ -145,8 +166,8 @@ REST_FRAMEWORK = {
     
    ),
     'DEFAULT_PERMISSION_CLASSES': (
-            #'rest_framework.permissions.AllowAny',
-            'rest_framework.permissions.IsAuthenticated', #  par défaut, toutes les requêtes auront besoin du token
+            'rest_framework.permissions.AllowAny',
+            #'rest_framework.permissions.IsAuthenticated', #  par défaut, toutes les requêtes auront besoin du token
           ),
 }
 
