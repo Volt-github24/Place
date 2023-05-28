@@ -30,11 +30,13 @@ debut = time.time()
 
 # Creation du fichier csv resultant
 i=0
-with open('deux_deux.csv', 'w', newline='') as fichier_csv:
+with open('deux_deux_users.csv', 'w', newline='') as fichier_csv:
     writer = csv.writer(fichier_csv)
+    header = ['user_id_1', 'user_id_2', 'position_relative']  # En-têtes
+
 
     # Ouverture du csv de toutes donnees pour extraction des coordonnees gps
-    colonnes_a_extraire = [1,2] # ce sont les colonnes cntenant les coordonnees gps
+    colonnes_a_extraire = [0,1,2] # ce sont les colonnes cntenant les id des users et leurs coordonnees gps
     gps_infos = [] #liste contenant toutes ces coordonnees gps
 
     with open('data_complete.csv', 'r') as file:
@@ -46,13 +48,13 @@ with open('deux_deux.csv', 'w', newline='') as fichier_csv:
             colonnes_extraction = [ligne[indice] for indice in colonnes_a_extraire]
             gps_infos.append(colonnes_extraction)
 
-    
+    writer.writerow(header) # j'ecris l'entete
     for loc1 in range(len(gps_infos)):
         
-        localisation1 = Point(gps_infos[loc1][0], gps_infos[loc1][1])
+        localisation1 = Point(gps_infos[loc1][1], gps_infos[loc1][2])
 
         for loc2 in range(len(gps_infos)):
-            localisation2 = Point(gps_infos[loc2][0], gps_infos[loc2][1])
+            localisation2 = Point(gps_infos[loc2][1], gps_infos[loc2][2])
 
             # Comparaison des latitudes et longitudes pour déterminer si localisation 1 est au nord ou au sud etc ... de localisation 2
             if localisation1.latitude > localisation2.latitude:
@@ -77,7 +79,8 @@ with open('deux_deux.csv', 'w', newline='') as fichier_csv:
                 else:
                     exp = "Sud-Ouest"
             
-            writer.writerow([loc1+1, loc2+1, exp])
+            #writer.writerow([loc1+1, loc2+1, exp]) # pour afficher les ids des localisations
+            writer.writerow([gps_infos[loc1][0], gps_infos[loc2][0], exp]) # pour afficher plutot les ids des users concernes (les users de la localisation concernee)
 
         i = i + 1
         print("deja a la localite", i)
@@ -94,17 +97,19 @@ for i in range(len(gps_infos)):
 
 # Creation du fichier csv resultant
 k = 0
-with open('trois_trois.csv', 'w', newline='') as fichier_csv:
+with open('trois_trois_users.csv', 'w', newline='') as fichier_csv:
     writer = csv.writer(fichier_csv)
+    header = ['user_id_1', 'user_id_2', 'user_id_3', 'position_relative']  # En-têtes
+    writer.writerow(header) # j'ecris l'entete
 
     # pour chacune de ces combinaisons la, considerer chaque localite et associer l'expression de localisation relative
     for occ in combinaisons:
-        localisation1 = Point(gps_infos[occ[0]][0], gps_infos[occ[0]][1])
-        localisation2 = Point(gps_infos[occ[1]][0], gps_infos[occ[1]][1])
+        localisation1 = Point(gps_infos[occ[0]][1], gps_infos[occ[0]][2])
+        localisation2 = Point(gps_infos[occ[1]][1], gps_infos[occ[1]][2])
         
         for i in range(len(gps_infos)):
 
-            localisation3 = Point(gps_infos[i][0], gps_infos[i][1])
+            localisation3 = Point(gps_infos[i][1], gps_infos[i][2])
             if localisation3 != localisation1 and localisation3 != localisation2 :
                 
                 # calcul de l'expression de localisation relative
@@ -129,7 +134,8 @@ with open('trois_trois.csv', 'w', newline='') as fichier_csv:
                     else:
                         exp = "Derriere à gauche"
                 
-                writer.writerow([occ[0]+1,occ[1]+1,i+1,exp])
+                #writer.writerow([occ[0]+1,occ[1]+1,i+1,exp]) # pour afficher les ids des localisations
+                writer.writerow([gps_infos[occ[0]][0],gps_infos[occ[1]][0],gps_infos[i][0],exp]) # pour afficher plutot les ids des users concernes (les users de la localisation concernee)
         k = k + 1
         print("deja a", k, "/", len(combinaisons))   
         if k == 5: break 
